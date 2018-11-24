@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "346097455169",
+    "firebase_url": "https://gocity-1541157231646.firebaseio.com",
+    "project_id": "gocity-1541157231646",
+    "storage_bucket": "gocity-1541157231646.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:346097455169:android:e9efe1aff60eff79",
+        "android_client_info": {
+          "package_name": "epitech.project.gerbet_l.gocity"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "346097455169-icf9r0qqgvo3ne23jc77ckmmesfhl43q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTBkYY9cckYZBNdPrleyT00-zFOIqaAIE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

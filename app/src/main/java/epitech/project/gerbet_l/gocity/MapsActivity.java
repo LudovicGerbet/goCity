@@ -9,10 +9,17 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +45,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // Write a message to the database
+        database = FirebaseDatabase.getInstance();
+
+        newCity("City Stade de Bartrès",43.123347,-0.045800);
         // Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng( 43.123347, -0.045800)).title("City Stade de Bartrès"));
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    public void newCity(String title, double lat, double lng) {
+        //Add to BDD
+        myRef = database.getReference();
+        myRef.setValue("toto");
+        myRef.setValue("toto1");
+        myRef.setValue("toto2");
+        myRef.setValue("toto3");
+
+        //Add to the Map
+        mMap.addMarker(new MarkerOptions().position(new LatLng( lat, lng)).title(title));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng( lat, lng)));
     }
 }
