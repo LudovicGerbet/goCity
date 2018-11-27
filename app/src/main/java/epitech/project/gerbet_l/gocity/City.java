@@ -5,6 +5,7 @@ public class City {
     private String title;
     private double latitude;
     private double longitude;
+    public User creator;
 
     public City() {}
 
@@ -14,6 +15,7 @@ public class City {
         title = name;
         latitude = lat;
         longitude = lng;
+        creator = new User("Ludovic","Gerbet");
     }
 
     public String getTitle() {
@@ -30,5 +32,9 @@ public class City {
 
     public void setTitle(String name) {
         title = name;
+    }
+
+    public User getCreator() {
+        return creator;
     }
 }

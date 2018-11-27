@@ -1,8 +1,16 @@
 package epitech.project.gerbet_l.gocity;
 
+import android.content.Intent;
+import android.nfc.Tag;
+import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,6 +37,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseDatabase database;
     private DatabaseReference myRef;
     private List<City> cityList;
+    private City lastCity;
+
+    //LOGS TAGS
+    public String loadCity = "CHARGEMENT D'UN CITY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,23 +51,48 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         //Put citys on map
         cityList = new ArrayList<>();
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_city:
+                    System.out.println("NEW CITY");
+                    //A APPELER LORS DE EVENT BOUTON NEW CITY
+                    //newCity("Stade de Bartrès",43.123347,-0.045800);
+                    //newCity("City de Sydney", -34, 151);
+                    return true;
+                case R.id.navigation_localisation:
+                    System.out.println("LOCALISATION");
+                    return true;
+                case R.id.navigation_profil:
+                    System.out.println("PROFIL");
+                    Intent intent = new Intent(MapsActivity.this, ProfilActivity.class);
+                    startActivity(intent);
+                    return true;
+            }
+            return false;
+        }
+
+    };
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         // Connect to database
         database = FirebaseDatabase.getInstance();
@@ -66,7 +103,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 cityList.clear();
                 for(DataSnapshot citySnapshot : dataSnapshot.getChildren()){
                     City city = citySnapshot.getValue(City.class);
+                    Log.i(loadCity, city.getTitle());
                     cityList.add(city);
+                    putAllCity(cityList);
                 }
             }
 
@@ -75,9 +114,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+    }
 
-        newCity("Stade de Bartrès",43.123347,-0.045800);
-        newCity("City de Sydney", -34, 151);
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void putAllCity(List<City> cityList) {
+        if (cityList.size() == 0) {
+            return;
+        }
+        cityList.forEach(city -> {
+            lastCity = city;
+            mMap.addMarker(new MarkerOptions().position(new LatLng( city.getLatitude(), city.getLongitude())).title(city.getTitle()));
+        });
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng( lastCity.getLatitude(), lastCity.getLongitude())));
     }
 
     public void newCity(String title, double lat, double lng) {
@@ -86,6 +134,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String id = myRef.push().getKey();
         City newCity = new City(id, title, lat, lng);
         myRef.child(id).setValue(newCity);
+        lastCity = newCity;
 
         //Add to the Map
         mMap.addMarker(new MarkerOptions().position(new LatLng( lat, lng)).title(title));
