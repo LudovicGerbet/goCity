@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".NewCityActivity"
+    android:background="@color/colorPrimary">
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/colorPrimaryDark"
+        app:itemIconTint="@color/colorLight"
+        app:itemTextColor="@color/colorLight"
+        app:menu="@menu/navigation" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Déclarer un nouveau city stade"
+        android:textColor="@color/colorLight"
+        android:textSize="22sp"
+        app:fontFamily="serif"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"/>
+
+    <EditText
+        android:id="@+id/cityTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/common_google_signin_btn_icon_light_normal_background"
+        android:backgroundTint="@color/colorLight"
+        android:layout_marginTop="150dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:text="Titre du City"/>
+
+    <fragment
+        android:id="@+id/place_autocomplete_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+        android:layout_marginTop="220dp"
+        />
+
+    <ImageButton
+        android:id="@+id/validNewCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="320dp"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/btn_valid" />
+
+</FrameLayout>

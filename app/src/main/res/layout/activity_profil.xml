@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimaryDark"
-    tools:context=".profil">
+    tools:context=".ProfilActivity">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -13,18 +13,19 @@
         android:id="@+id/textProfil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Profil"
         android:textColor="@color/colorLight"
         android:textSize="30sp"
-        android:layout_gravity="center_horizontal"
-        app:fontFamily="serif" />
+        app:fontFamily="serif"
+        android:layout_marginTop="50dp"/>
 
     <EditText
         android:id="@+id/editFirstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="150dp"
         android:background="@drawable/common_google_signin_btn_icon_light_normal_background"
         android:backgroundTint="@color/colorLight"
         android:ems="10"
@@ -36,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="170dp"
+        android:layout_marginTop="220dp"
         android:background="@drawable/common_google_signin_btn_icon_light_normal_background"
         android:backgroundTint="@color/colorLight"
         android:ems="10"
@@ -44,12 +45,13 @@
         android:text="Nom" />
 
     <ImageButton
-        android:id="@+id/imageButton"
+        android:id="@+id/validProfil"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="300dp"
-        android:src="@android:drawable/ic_menu_set_as" />
+        android:layout_marginTop="320dp"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/btn_valid" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"

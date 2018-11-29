@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private DatabaseReference myRef;
     private List<City> cityList;
     private City lastCity;
+    private City createdCity;
+    private User user;
 
     //LOGS TAGS
     public String loadCity = "CHARGEMENT D'UN CITY";
@@ -54,8 +57,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
+        database = FirebaseDatabase.getInstance();
+        user = new User("Prénom", "Nom");
         //Put citys on map
         cityList = new ArrayList<>();
+
+        //Retrieve created of changed
+        createdCity = (City) getIntent().getSerializableExtra("newCity");
+        User newUser = (User) getIntent().getSerializableExtra("user");
+
+        if (newUser != null){
+            this.user = newUser;
+        }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -66,17 +79,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             switch (item.getItemId()) {
                 case R.id.navigation_city:
                     System.out.println("NEW CITY");
-                    //A APPELER LORS DE EVENT BOUTON NEW CITY
-                    //newCity("Stade de Bartrès",43.123347,-0.045800);
-                    //newCity("City de Sydney", -34, 151);
+                    Intent cityIntent = new Intent(MapsActivity.this, NewCityActivity.class);
+                    cityIntent.putExtra("user", user);
+                    startActivity(cityIntent);
                     return true;
                 case R.id.navigation_localisation:
                     System.out.println("LOCALISATION");
                     return true;
                 case R.id.navigation_profil:
                     System.out.println("PROFIL");
-                    Intent intent = new Intent(MapsActivity.this, ProfilActivity.class);
-                    startActivity(intent);
+                    Intent profilIntent = new Intent(MapsActivity.this, ProfilActivity.class);
+                    profilIntent.putExtra("user", user);
+                    startActivity(profilIntent);
                     return true;
             }
             return false;
@@ -87,6 +101,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        if (createdCity != null) {
+            newCity(createdCity.getTitle(), createdCity.getAddress(), createdCity.getLatitude(), createdCity.getLongitude(), createdCity.getCreator());
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -105,8 +123,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     City city = citySnapshot.getValue(City.class);
                     Log.i(loadCity, city.getTitle());
                     cityList.add(city);
-                    putAllCity(cityList);
+
                 }
+                putAllCity(cityList);
             }
 
             @Override
@@ -128,11 +147,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng( lastCity.getLatitude(), lastCity.getLongitude())));
     }
 
-    public void newCity(String title, double lat, double lng) {
+    public void newCity(String title, String address, double lat, double lng, User creator) {
         //Add to BDD
         myRef = database.getReference("/citys");
         String id = myRef.push().getKey();
-        City newCity = new City(id, title, lat, lng);
+        City newCity = new City(id, title, address, lat, lng, creator);
         myRef.child(id).setValue(newCity);
         lastCity = newCity;
 

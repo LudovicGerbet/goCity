@@ -1,8 +1,15 @@
 package epitech.project.gerbet_l.gocity;
 
-public class User {
+import java.io.Serializable;
+
+public class User implements Serializable {
     private String firstName;
     private String lastName;
+
+    public User() {
+        firstName = null;
+        lastName = null;
+    }
 
     public User(String first, String last) {
         firstName = first;
