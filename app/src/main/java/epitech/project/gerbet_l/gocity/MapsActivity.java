@@ -1,6 +1,7 @@
 package epitech.project.gerbet_l.gocity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Handler;
@@ -68,6 +69,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (newUser != null){
             this.user = newUser;
+            SharedPreferences settings = getSharedPreferences("user", MODE_PRIVATE);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("firstName", this.user.getFirstName());
+            editor.putString("lastName", this.user.getLastName());
+            editor.commit();
+        } else {
+            SharedPreferences settings = getSharedPreferences("user", MODE_PRIVATE);
+            this.user.setFirstName(settings.getString("firstName", "Prénom"));
+            this.user.setLastName(settings.getString("lastName", "Nom"));
         }
     }
 
