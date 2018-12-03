@@ -9,6 +9,7 @@ public class City implements Serializable {
     private double latitude;
     private double longitude;
     public User creator;
+    private String pictureId;
 
     /*
     ** CONSTRUCTORS
@@ -20,9 +21,10 @@ public class City implements Serializable {
         this.latitude = 0;
         this.longitude = 0;
         this.creator = null;
+        this.pictureId = null;
     }
 
-    public City(String cityId, String name, String address ,double lat, double lng, User creator){
+    public City(String cityId, String name, String address ,double lat, double lng, User creator, String pictureId){
         System.out.println("new City created");
         id = cityId;
         title = name;
@@ -30,11 +32,17 @@ public class City implements Serializable {
         latitude = lat;
         longitude = lng;
         this.creator = creator;
+        this.pictureId = pictureId;
     }
 
     /*
     ** GET FUNCTIONS
     */
+
+    public String getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }
@@ -55,6 +63,9 @@ public class City implements Serializable {
         return creator;
     }
 
+    public String getPictureId() {
+        return pictureId;
+    }
 
     /*
     ** SET FUNCTIONS
@@ -77,5 +88,9 @@ public class City implements Serializable {
 
     public void setCreator(User creator) {
         this.creator = creator;
+    }
+
+    public void setPictureId(String pictureId) {
+        this.pictureId = pictureId;
     }
 }
