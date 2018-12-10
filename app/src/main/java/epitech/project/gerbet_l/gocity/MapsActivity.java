@@ -18,7 +18,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -115,6 +117,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (createdCity != null) {
             newCity(createdCity.getTitle(), createdCity.getAddress(), createdCity.getLatitude(), createdCity.getLongitude(), createdCity.getCreator(), createdCity.getPictureId());
         }
+
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                LatLng position = marker.getPosition();
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot citySnapshot : dataSnapshot.getChildren()){
+                            City city = citySnapshot.getValue(City.class);
+                            if (city.getLatitude() == position.latitude && city.getLongitude() == position.longitude) {
+                                System.out.println(city.getTitle());
+                                //Basculer sur la nouvelle activitée
+                                Intent detailIntent = new Intent(MapsActivity.this, DetailActivity.class);
+                                detailIntent.putExtra("user", user);
+                                detailIntent.putExtra("city", city);
+                                startActivity(detailIntent);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                return true;
+            }
+        });
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
