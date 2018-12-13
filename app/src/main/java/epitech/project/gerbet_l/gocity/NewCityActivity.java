@@ -35,6 +35,7 @@ public class NewCityActivity extends AppCompatActivity {
     private String TAG = "_GOOGLE PLACE API";
     private City newCity;
     private EditText cityTitle;
+    private EditText cityDescription;
     private User user;
 
     //PICTURES
@@ -91,6 +92,7 @@ public class NewCityActivity extends AppCompatActivity {
         });
 
         cityTitle = findViewById(R.id.cityTitle);
+        cityDescription = findViewById(R.id.cityDescription);
         final ImageButton button = findViewById(R.id.validNewCity);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -178,6 +180,7 @@ public class NewCityActivity extends AppCompatActivity {
             return;
         }
         newCity.setTitle(cityTitle.getText().toString());
+        newCity.setDescription(cityDescription.getText().toString());
         newCity.setCreator(user);
         uploadImage();
     }

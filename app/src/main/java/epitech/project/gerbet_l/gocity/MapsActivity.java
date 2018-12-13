@@ -115,7 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         if (createdCity != null) {
-            newCity(createdCity.getTitle(), createdCity.getAddress(), createdCity.getLatitude(), createdCity.getLongitude(), createdCity.getCreator(), createdCity.getPictureId());
+            newCity(createdCity.getTitle(), createdCity.getAddress(), createdCity.getLatitude(), createdCity.getLongitude(), createdCity.getCreator(), createdCity.getPictureId(), createdCity.getDescription());
         }
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -188,11 +188,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng( lastCity.getLatitude(), lastCity.getLongitude())));
     }
 
-    public void newCity(String title, String address, double lat, double lng, User creator, String pictureId) {
+    public void newCity(String title, String address, double lat, double lng, User creator, String pictureId, String description) {
         //Add to BDD
         myRef = database.getReference("/citys");
         String id = myRef.push().getKey();
-        City newCity = new City(id, title, address, lat, lng, creator, pictureId);
+        City newCity = new City(id, title, address, lat, lng, creator, pictureId, description);
         myRef.child(id).setValue(newCity);
         lastCity = newCity;
 
