@@ -25,8 +25,10 @@ public class ProfilActivity extends AppCompatActivity {
 
         firstName = findViewById(R.id.editFirstName);
         lastName = findViewById(R.id.editLastName);
-
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         final ImageButton button = findViewById(R.id.validProfil);
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
@@ -52,6 +54,8 @@ public class ProfilActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_localisation:
                     System.out.println("LOCALISATION");
+                    Intent mapsIntent = new Intent(ProfilActivity.this, MapsActivity.class);
+                    startActivity(mapsIntent);
                     return true;
                 case R.id.navigation_profil:
                     System.out.println("PROFIL");

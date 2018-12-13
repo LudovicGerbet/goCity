@@ -6,9 +6,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,7 +41,7 @@ public class NewCityActivity extends AppCompatActivity {
     private User user;
 
     //PICTURES
-    private Button btnChoose;
+    private ImageButton btnChoose;
     private Uri filePath;
     private ImageView imageView;
     private final int PICK_IMAGE_REQUEST = 71;
@@ -55,12 +57,14 @@ public class NewCityActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_city);
 
         //Initialize Views
-        btnChoose = (Button) findViewById(R.id.btnChoose);
-        imageView = (ImageView) findViewById(R.id.imgView);
+        btnChoose = findViewById(R.id.btnChoose);
+        imageView = findViewById(R.id.imgView);
         newCity = new City();
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         pictureId = null;
+        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         btnChoose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +105,32 @@ public class NewCityActivity extends AppCompatActivity {
             }
         });
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
+            = new BottomNavigationView.OnNavigationItemSelectedListener() {
+
+        @Override
+        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.navigation_city:
+                    System.out.println("NEW CITY");
+                    return true;
+                case R.id.navigation_localisation:
+                    System.out.println("LOCALISATION");
+                    Intent mapsIntent = new Intent(NewCityActivity.this, MapsActivity.class);
+                    startActivity(mapsIntent);
+                    return true;
+                case R.id.navigation_profil:
+                    System.out.println("PROFIL");
+                    Intent profilIntent = new Intent(NewCityActivity.this, ProfilActivity.class);
+                    profilIntent.putExtra("user", user);
+                    startActivity(profilIntent);
+                    return true;
+            }
+            return false;
+        }
+
+    };
 
     private void chooseImage() {
         Intent intent = new Intent();

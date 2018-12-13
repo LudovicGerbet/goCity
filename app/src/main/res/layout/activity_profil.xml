@@ -14,11 +14,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:layout_marginTop="50dp"
         android:text="Profil"
         android:textColor="@color/colorLight"
-        android:textSize="30sp"
-        app:fontFamily="serif"
-        android:layout_marginTop="50dp"/>
+        android:textStyle="bold"
+        app:fontFamily="@font/agency_fb"
+        android:textSize="50sp" />
 
     <EditText
         android:id="@+id/editFirstName"
