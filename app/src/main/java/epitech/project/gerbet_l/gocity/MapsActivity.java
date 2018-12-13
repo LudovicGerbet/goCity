@@ -1,10 +1,17 @@
 package epitech.project.gerbet_l.gocity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.nfc.Tag;
 import android.os.Build;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
@@ -35,7 +42,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
 
     private GoogleMap mMap;
     private FirebaseDatabase database;
@@ -44,7 +51,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private City lastCity;
     private City createdCity;
     private User user;
+    private Location mLocation;
+    private LocationManager locationManager;
 
+    private static final String[] INITIAL_PERMS={
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.READ_CONTACTS
+    };
+    private static final String[] LOCATION_PERMS={
+            Manifest.permission.ACCESS_FINE_LOCATION
+    };
+    private static final int INITIAL_REQUEST=1337;
+    private static final int LOCATION_REQUEST=INITIAL_REQUEST+3;
     //LOGS TAGS
     public String loadCity = "CHARGEMENT D'UN CITY";
 
@@ -61,6 +79,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         database = FirebaseDatabase.getInstance();
+        mLocation = null;
         user = new User("Prénom", "Nom");
         //Put citys on map
         cityList = new ArrayList<>();
@@ -81,6 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             this.user.setFirstName(settings.getString("firstName", "Prénom"));
             this.user.setLastName(settings.getString("lastName", "Nom"));
         }
+        requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -97,6 +117,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     return true;
                 case R.id.navigation_localisation:
                     System.out.println("LOCALISATION");
+                    if (mLocation != null) {
+                        LatLng latLng = new LatLng(mLocation.getLatitude(),mLocation.getLongitude());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                        mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+                    }
                     return true;
                 case R.id.navigation_profil:
                     System.out.println("PROFIL");
@@ -117,7 +142,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (createdCity != null) {
             newCity(createdCity.getTitle(), createdCity.getAddress(), createdCity.getLatitude(), createdCity.getLongitude(), createdCity.getCreator(), createdCity.getPictureId(), createdCity.getDescription());
         }
-
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
@@ -202,4 +226,79 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Toast.makeText(this,title + " sauvegardé", Toast.LENGTH_LONG).show();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        //Obtention de la référence du service
+        locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
+        //Si le GPS est disponible, on s'y abonne
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            abonnementGPS();
+        }
+
+        if (mLocation != null) {
+            LatLng latLng = new LatLng(mLocation.getLatitude(),mLocation.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(12));
+        }
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        //On appelle la méthode pour se désabonner
+        desabonnementGPS();
+    }
+
+    /**
+     * Méthode permettant de s'abonner à la localisation par GPS.
+     */
+    public void abonnementGPS() {
+        //On s'abonne
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 10, this);
+    }
+
+    /**
+     * Méthode permettant de se désabonner de la localisation par GPS.
+     */
+    public void desabonnementGPS() {
+        //Si le GPS est disponible, on s'y abonne
+        locationManager.removeUpdates(this);
+    }
+
+    @Override
+    public void onLocationChanged(final Location location) {
+        //On affiche dans un Toat la nouvelle Localisation
+        mLocation = location;
+        /*final StringBuilder msg = new StringBuilder("lat : ");
+        msg.append(location.getLatitude());
+        msg.append( "; lng : ");
+        msg.append(location.getLongitude());
+
+        Toast.makeText(this, msg.toString(), Toast.LENGTH_SHORT).show();
+        */
+    }
+
+    @Override
+    public void onProviderDisabled(final String provider) {
+        //Si le GPS est désactivé on se désabonne
+        if("gps".equals(provider)) {
+            desabonnementGPS();
+        }
+    }
+
+    @Override
+    public void onProviderEnabled(final String provider) {
+        //Si le GPS est activé on s'abonne
+        if("gps".equals(provider)) {
+            abonnementGPS();
+        }
+    }
+
+    @Override
+    public void onStatusChanged(final String provider, final int status, final Bundle extras) { }
+
 }
