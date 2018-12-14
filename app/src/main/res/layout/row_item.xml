@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
+    android:paddingBottom="5dp"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:id="@+id/activityNameUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="Ludovic Gerbet"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/colorLight"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/activityName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/activityNameUser"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="18dp"
+        android:text="Football"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/black"
+        android:layout_alignLeft="@+id/activityNameUser" />
+
+
+
+    <ImageButton
+        android:id="@+id/btnGoAndLeave"
+        android:layout_width="90dp"
+        android:layout_height="32dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/btn_meet"
+        android:background="@color/colorPrimary"
+        android:scaleType="fitCenter"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true">
+
+        <TextView
+            android:id="@+id/hourStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10h30"
+            android:textColor="@android:color/holo_blue_bright"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" - "
+            android:textColor="@android:color/black"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/hourEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12h"
+            android:textColor="@android:color/holo_red_dark"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -45,6 +45,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private ImageButton titleModificationButton;
     private ImageButton descModificationButton;
     private ImageButton picModificationButton;
+    private ImageButton newEventButton;
     private FirebaseStorage storage;
     private User user;
     private ViewSwitcher switcher;
@@ -78,6 +79,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         titleModificationButton = findViewById(R.id.titleModification);
         descModificationButton = findViewById(R.id.descModification);
         picModificationButton = findViewById(R.id.picModification);
+        newEventButton = findViewById(R.id.btnNewEvent);
         cityTitle.setText(thisCity.getTitle());
         description.setText(thisCity.getDescription());
         switcher = findViewById(R.id.my_switcher);
@@ -86,6 +88,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         descModificationButton.setOnClickListener(this);
         titleModificationButton.setOnClickListener(this);
         picModificationButton.setOnClickListener(this);
+        newEventButton.setOnClickListener(this);
         pictureId = null;
     }
 
@@ -124,6 +127,12 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.picModification:
                 changePicture();
+                break;
+            case R.id.btnNewEvent:
+                Intent newEventIntent = new Intent(DetailActivity.this, NewEventActivity.class);
+                newEventIntent.putExtra("city", thisCity);
+                newEventIntent.putExtra("user", user);
+                startActivity(newEventIntent);
                 break;
             default:
                 break;

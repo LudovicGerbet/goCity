@@ -1,6 +1,14 @@
 package epitech.project.gerbet_l.gocity;
 
+import android.app.Activity;
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 public class City implements Serializable {
     private String id;
@@ -11,6 +19,7 @@ public class City implements Serializable {
     public User creator;
     private String pictureId;
     private String description;
+    private List<Event> events;
 
     /*
     ** CONSTRUCTORS
@@ -24,6 +33,7 @@ public class City implements Serializable {
         this.creator = null;
         this.pictureId = null;
         this.description = null;
+        this.events = null;
     }
 
     public City(String cityId, String name, String address ,double lat, double lng, User creator, String pictureId, String description){
@@ -36,6 +46,7 @@ public class City implements Serializable {
         this.creator = creator;
         this.pictureId = pictureId;
         this.description = description;
+        this.events = null;
     }
 
     /*
@@ -74,9 +85,18 @@ public class City implements Serializable {
         return description;
     }
 
+    public List<Event> getEvents() {
+        return events;
+    }
+
     /*
     ** SET FUNCTIONS
     */
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -103,5 +123,16 @@ public class City implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setEvents(List<Event> events) {
+        this.events = events;
+    }
+
+    public void addEvent(Event event) {
+        if (this.events == null) {
+            this.events = new ArrayList<Event>();
+        }
+        this.events.add(event);
     }
 }
