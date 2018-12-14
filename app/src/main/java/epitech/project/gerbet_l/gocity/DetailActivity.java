@@ -1,8 +1,11 @@
 package epitech.project.gerbet_l.gocity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -20,7 +24,12 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.io.IOException;
+import java.util.UUID;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -35,10 +44,15 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private EditText editTitle;
     private ImageButton titleModificationButton;
     private ImageButton descModificationButton;
+    private ImageButton picModificationButton;
     private FirebaseStorage storage;
     private User user;
     private ViewSwitcher switcher;
     private ViewSwitcher switcherTitle;
+    private final int PICK_IMAGE_REQUEST = 71;
+    private Uri filePath;
+    private String pictureId;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +66,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         this.thisCity = (City) getIntent().getSerializableExtra("city");
         this.user = (User) getIntent().getSerializableExtra("user");
 
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("/citys");
         cityPicture = findViewById(R.id.detailedCityPicture);
@@ -61,6 +77,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         editTitle = findViewById(R.id.hiddenEditTitle);
         titleModificationButton = findViewById(R.id.titleModification);
         descModificationButton = findViewById(R.id.descModification);
+        picModificationButton = findViewById(R.id.picModification);
         cityTitle.setText(thisCity.getTitle());
         description.setText(thisCity.getDescription());
         switcher = findViewById(R.id.my_switcher);
@@ -68,6 +85,8 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         getPicture(thisCity.getPictureId());
         descModificationButton.setOnClickListener(this);
         titleModificationButton.setOnClickListener(this);
+        picModificationButton.setOnClickListener(this);
+        pictureId = null;
     }
 
     @Override
@@ -102,6 +121,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     switcher.showPrevious();
                     descModificationButton.setBackgroundResource(R.color.colorPrimary);
                 }
+                break;
+            case R.id.picModification:
+                changePicture();
                 break;
             default:
                 break;
@@ -160,5 +182,70 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                 cityPicture.setImageResource(R.drawable.btn_add_picture);
             }
         });
+    }
+
+    protected void changePicture() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK
+                && data != null && data.getData() != null )
+        {
+            filePath = data.getData();
+            try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
+                uploadImage();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private String uploadImage() {
+
+        if(filePath != null)
+        {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            this.pictureId = UUID.randomUUID().toString();
+            StorageReference ref = storageReference.child("images/"+ pictureId);
+            ref.putFile(filePath)
+                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            progressDialog.dismiss();
+                            Toast.makeText(DetailActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            storageReference.child("images/"+ thisCity.getPictureId()).delete();
+                            thisCity.setPictureId(pictureId);
+                            myRef.child(thisCity.getId()).setValue(thisCity);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            progressDialog.dismiss();
+                            Toast.makeText(DetailActivity.this, "Failed "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0*taskSnapshot.getBytesTransferred()/taskSnapshot
+                                    .getTotalByteCount());
+                            progressDialog.setMessage("Uploaded "+(int)progress+"%");
+                        }
+                    });
+        }
+        return null;
     }
 }

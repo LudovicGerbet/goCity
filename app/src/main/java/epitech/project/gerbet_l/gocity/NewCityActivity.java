@@ -45,8 +45,8 @@ public class NewCityActivity extends AppCompatActivity {
     private Uri filePath;
     private ImageView imageView;
     private final int PICK_IMAGE_REQUEST = 71;
-    FirebaseStorage storage;
-    StorageReference storageReference;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
     private String pictureId;
 
 
