@@ -94,11 +94,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             SharedPreferences.Editor editor = settings.edit();
             editor.putString("firstName", this.user.getFirstName());
             editor.putString("lastName", this.user.getLastName());
+            editor.putString("token", this.user.getToken());
             editor.commit();
         } else {
             SharedPreferences settings = getSharedPreferences("user", MODE_PRIVATE);
             this.user.setFirstName(settings.getString("firstName", "Prénom"));
             this.user.setLastName(settings.getString("lastName", "Nom"));
+            this.user.setToken(settings.getString("token", null));
         }
         requestPermissions(INITIAL_PERMS, INITIAL_REQUEST);
     }
