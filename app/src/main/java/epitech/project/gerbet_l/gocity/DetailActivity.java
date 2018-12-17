@@ -12,9 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
@@ -29,6 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 public class DetailActivity extends AppCompatActivity implements View.OnClickListener{
@@ -54,6 +58,10 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
     private Uri filePath;
     private String pictureId;
     private StorageReference storageReference;
+    private ListView listView;
+
+    String[] NAMES = {"Ludovic Gerbet", "Loic Domec", "Guillaume Marie"};
+    String[] SPORTS = {"Football", "Golf", "Handball"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +79,9 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         storageReference = storage.getReference();
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("/citys");
+        listView = findViewById(R.id.list);
+        CustomAdapter customAdapter = new CustomAdapter();
+        listView.setAdapter(customAdapter);
         cityPicture = findViewById(R.id.detailedCityPicture);
         cityTitle = findViewById(R.id.detailedCityTitle);
         description = findViewById(R.id.description);
@@ -177,7 +188,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         StorageReference pathReference = storageRef.child("images/" + pictureId);
 
         final long ONE_MEGABYTE = 1024 * 1024;
-        pathReference.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+        pathReference.getBytes(ONE_MEGABYTE * 10).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
                 // Data for "images/island.jpg" is returns, use this as needed
@@ -188,7 +199,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception exception) {
-                cityPicture.setImageResource(R.drawable.btn_add_picture);
+                cityPicture.setImageResource(R.drawable.no_pic);
             }
         });
     }
@@ -210,6 +221,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 uploadImage();
+                cityPicture.setImageBitmap(bitmap);
             }
             catch (IOException e)
             {
@@ -256,5 +268,98 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                     });
         }
         return null;
+    }
+
+    class CustomAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            List<Event> events = thisCity.getEvents();
+            if (events != null)
+                return events.size();
+            else
+                return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = getLayoutInflater().inflate(R.layout.row_item, null);
+            TextView vName = (TextView) convertView.findViewById(R.id.activityNameUser);
+            TextView vEventName = (TextView) convertView.findViewById(R.id.activityName);
+            TextView vDate = (TextView) convertView.findViewById(R.id.date);
+            TextView vHourStart = (TextView) convertView.findViewById(R.id.hourStart);
+            TextView vHourEnd = (TextView) convertView.findViewById(R.id.hourEnd);
+            ImageButton vBtnGo = (ImageButton) convertView.findViewById(R.id.btnGoAndLeave);
+            boolean isOwnEvent = false;
+
+
+            List<Event> events = thisCity.getEvents();
+            vName.setText(events.get(position).getCreator().getFirstName() + " " + events.get(position).getCreator().getLastName());
+            vEventName.setText(events.get(position).getTitle());
+            vDate.setText(events.get(position).getDate());
+            vHourStart.setText(events.get(position).getStart());
+            vHourEnd.setText(events.get(position).getEnd());
+
+            if (events.get(position).getCreator().getToken().equals(user.getToken())) {
+                System.out.println(events.get(position).getCreator().getToken() + " " + user.getToken());
+                vBtnGo.setImageResource(R.drawable.btn_trash);
+                isOwnEvent = true;
+            }
+            else if (events.get(position).isOpen() == false){
+                vBtnGo.setVisibility(View.INVISIBLE);
+            }
+            else {
+                if (events.get(position).getPlayers().size() > 0) {
+                    boolean userFound = false;
+                    int i;
+                    for (i = 0; i < events.get(position).getPlayers().size(); i++) {
+                        if (events.get(position).getPlayers().get(i).getToken().equals(user.getToken())) {
+                            userFound = true;
+                        }
+                    }
+                    if (userFound)
+                        vBtnGo.setImageResource(R.drawable.btn_leave);
+                }
+            }
+            boolean finalIsOwnEvent = isOwnEvent;
+            vBtnGo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (finalIsOwnEvent) {
+                        events.remove(events.get(position));
+                        myRef.child(thisCity.getId()).setValue(thisCity);
+                        finish();
+                        startActivity(getIntent());
+                    } else {
+                        boolean userFound = false;
+                        int i;
+                        for (i = 0; i < events.get(position).getPlayers().size(); i++) {
+                            if (events.get(position).getPlayers().get(i).getToken().equals(user.getToken()))
+                                userFound = true;
+                        }
+                        if (userFound){
+                            events.get(position).addPlayer(user);
+                            vBtnGo.setImageResource(R.drawable.btn_leave);
+                            myRef.child(thisCity.getId()).setValue(thisCity);
+                        } else {
+                            events.get(position).deletePlayer(user);
+                            myRef.child(thisCity.getId()).setValue(thisCity);
+                            vBtnGo.setImageResource(R.drawable.btn_meet);
+                        }
+                    }
+                }
+            });
+            return convertView;
+        }
     }
 }

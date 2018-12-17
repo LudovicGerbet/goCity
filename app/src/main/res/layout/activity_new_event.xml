@@ -9,20 +9,21 @@
     android:background="@color/colorPrimary">
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
         android:orientation="vertical"
-        android:layout_centerHorizontal="true">
+        android:padding="80dp">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
             android:layout_gravity="center"
+            android:text="Nouvelle Activitée"
             android:textColor="@color/colorLight"
-            android:textStyle="bold"
-            app:fontFamily="@font/agency_fb"
             android:textSize="30sp"
-            android:text="Nouvelle Activitée"/>
+            android:textStyle="bold"
+            app:fontFamily="@font/agency_fb" />
 
         <EditText
             android:id="@+id/event_title"
@@ -30,73 +31,135 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:background="@color/colorLight"
-            android:text="Titre"
-            android:maxEms="20"/>
-        <TextView
+            android:maxEms="20"
+            android:text="Titre" />
+
+        <Switch
+            android:id="@+id/switch1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/in_date"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SELECT DATE"
-            android:id="@+id/btn_date"
-            android:layout_alignBottom="@+id/in_date"
-            android:layout_toRightOf="@+id/in_date"
-            android:layout_toEndOf="@+id/in_date" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/in_time_start"
-            android:layout_below="@+id/in_date"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SELECT TIME START"
-            android:id="@+id/btn_time_start"
-            android:layout_below="@+id/btn_date"
-            android:layout_alignLeft="@+id/btn_date"
-            android:layout_alignStart="@+id/btn_date" />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/in_time_end"
-            android:layout_below="@+id/in_date"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="SELECT TIME END"
-            android:id="@+id/btn_time_end"
-            android:layout_below="@+id/btn_date"
-            android:layout_alignLeft="@+id/btn_date"
-            android:layout_alignStart="@+id/btn_date" />
+            android:layout_height="44dp"
+            android:text="Public"
+            android:textColor="@color/colorLight"
+            android:textSize="20sp"
+            app:fontFamily="@font/agency_fb"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="20dp">
-            <Button
-                android:id="@+id/btn_back"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="15dp">
+
+            <ImageButton
+                android:id="@+id/btn_date"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/in_date"
+                android:layout_toEndOf="@+id/in_date"
+                android:layout_toRightOf="@+id/in_date"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_date" />
+
+            <TextView
+                android:id="@+id/in_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="RETOUR"/>
-            <Button
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center"
+                android:textColor="@color/colorLight"
+                android:textSize="30sp"
+                app:fontFamily="@font/agency_fb"
+                android:layout_marginLeft="20dp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="15dp">
+            <ImageButton
+                android:id="@+id/btn_time_start"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/btn_date"
+                android:layout_alignStart="@+id/btn_date"
+                android:layout_alignLeft="@+id/btn_date"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_start" />
+
+            <TextView
+                android:id="@+id/in_time_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/in_date"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="@android:color/holo_blue_bright"
+                android:textSize="30sp"
+                app:fontFamily="@font/agency_fb" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <ImageButton
+                android:id="@+id/btn_time_end"
+                android:layout_width="100dp"
+                android:layout_height="40dp"
+                android:layout_below="@+id/btn_date"
+                android:layout_alignStart="@+id/btn_date"
+                android:layout_alignLeft="@+id/btn_date"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_end"
+                />
+
+            <TextView
+                android:id="@+id/in_time_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/in_date"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:textColor="@android:color/holo_red_dark"
+                android:textSize="30sp"
+                app:fontFamily="@font/agency_fb" />
+        </LinearLayout>
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="53dp"
+                android:layout_height="57dp"
+                android:layout_gravity="center"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_back" />
+
+            <ImageButton
                 android:id="@+id/btn_valid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Valider"/>
+                android:layout_gravity="center"
+                android:layout_marginLeft="27dp"
+                android:background="@color/colorPrimary"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_valid" />
         </LinearLayout>
+
     </LinearLayout>
 </RelativeLayout>

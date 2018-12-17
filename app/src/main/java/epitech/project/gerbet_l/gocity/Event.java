@@ -15,6 +15,7 @@ public class Event implements Serializable {
     private String id;
     private User creator;
     private String title;
+    private boolean isOpen;
     private String date;
     private String start;
     private String end;
@@ -24,6 +25,7 @@ public class Event implements Serializable {
         this.id = null;
         this.creator = null;
         this.title = null;
+        this.isOpen = false;
         this.date = null;
         this.start = null;
         this.end = null;
@@ -34,6 +36,7 @@ public class Event implements Serializable {
         this.id = id;
         this.creator = creator;
         this.title = title;
+        this.isOpen = false;
         this.date = date;
         this.start = start;
         this.end = end;
@@ -54,6 +57,10 @@ public class Event implements Serializable {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 
     public String getDate() {
@@ -88,6 +95,10 @@ public class Event implements Serializable {
         this.title = title;
     }
 
+    public void setOpen(boolean open) {
+        isOpen = open;
+    }
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -109,5 +120,12 @@ public class Event implements Serializable {
             this.players = new ArrayList<User>();
         }
         this.players.add(player);
+    }
+
+    public void deletePlayer(User player) {
+        for (int i = 0; i < this.players.size(); i++) {
+            if (player.getToken() == this.players.get(i).getToken())
+                this.players.remove(this.players.get(i));
+        }
     }
 }

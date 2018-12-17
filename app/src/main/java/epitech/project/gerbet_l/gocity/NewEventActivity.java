@@ -11,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -26,12 +28,13 @@ public class NewEventActivity extends AppCompatActivity implements View.OnClickL
 
     private FirebaseDatabase database;
     private DatabaseReference myRef;
-    private Button btnDatePicker, btnTimeStart, btnTimeEnd, btnBack, btnValid;
+    private ImageButton btnDatePicker, btnTimeStart, btnTimeEnd, btnBack, btnValid;
     private TextView txtDate, txtTimeStart, txtTimeEnd;
     private int mYear, mMonth, mDay, mHour, mMinute;
     private City city;
     private User user;
     private EditText eventTitle;
+    private Switch aSwitch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +46,13 @@ public class NewEventActivity extends AppCompatActivity implements View.OnClickL
         myRef = database.getReference("/citys");
         this.city = (City) getIntent().getSerializableExtra("city");
         this.user = (User) getIntent().getSerializableExtra("user");
-        btnDatePicker=(Button)findViewById(R.id.btn_date);
-        btnTimeStart=(Button)findViewById(R.id.btn_time_start);
-        btnTimeEnd=(Button)findViewById(R.id.btn_time_end);
-        txtDate=(TextView) findViewById(R.id.in_date);
-        txtTimeStart=(TextView) findViewById(R.id.in_time_start);
-        txtTimeEnd=(TextView) findViewById(R.id.in_time_end);
+        aSwitch = findViewById(R.id.switch1);
+        btnDatePicker= findViewById(R.id.btn_date);
+        btnTimeStart= findViewById(R.id.btn_time_start);
+        btnTimeEnd= findViewById(R.id.btn_time_end);
+        txtDate= findViewById(R.id.in_date);
+        txtTimeStart= findViewById(R.id.in_time_start);
+        txtTimeEnd= findViewById(R.id.in_time_end);
         eventTitle = findViewById(R.id.event_title);
         btnBack= findViewById(R.id.btn_back);
         btnValid= findViewById(R.id.btn_valid);
@@ -143,6 +147,8 @@ public class NewEventActivity extends AppCompatActivity implements View.OnClickL
                 txtTimeStart.getText().toString(),
                 txtTimeEnd.getText().toString());
 
+        if (aSwitch.isChecked())
+            newEvent.setOpen(true);
         newEvent.addPlayer(user);
         city.addEvent(newEvent);
         myRef.child(city.getId()).setValue(city);
