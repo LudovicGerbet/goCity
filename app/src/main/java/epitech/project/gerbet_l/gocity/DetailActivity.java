@@ -31,6 +31,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
@@ -300,6 +302,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
             TextView vHourStart = (TextView) convertView.findViewById(R.id.hourStart);
             TextView vHourEnd = (TextView) convertView.findViewById(R.id.hourEnd);
             ImageButton vBtnGo = (ImageButton) convertView.findViewById(R.id.btnGoAndLeave);
+            ImageButton vBtnShow = (ImageButton) convertView.findViewById(R.id.btnShow);
             boolean isOwnEvent = false;
 
 
@@ -357,6 +360,18 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                             vBtnGo.setImageResource(R.drawable.btn_meet);
                         }
                     }
+                }
+            });
+
+            vBtnShow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String msg = "Participants :";
+                    int i;
+                    for (i = 0; i < events.get(position).getPlayers().size(); i++) {
+                        msg = msg + " " + events.get(position).getPlayers().get(i).getFirstName() + " " + events.get(position).getPlayers().get(i).getLastName() + ";";
+                    }
+                    Toast.makeText(DetailActivity.this, msg, Toast.LENGTH_SHORT).show();
                 }
             });
             return convertView;
