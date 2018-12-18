@@ -350,7 +350,7 @@ public class DetailActivity extends AppCompatActivity implements View.OnClickLis
                             if (events.get(position).getPlayers().get(i).getToken().equals(user.getToken()))
                                 userFound = true;
                         }
-                        if (userFound){
+                        if (!userFound){
                             events.get(position).addPlayer(user);
                             vBtnGo.setImageResource(R.drawable.btn_leave);
                             myRef.child(thisCity.getId()).setValue(thisCity);

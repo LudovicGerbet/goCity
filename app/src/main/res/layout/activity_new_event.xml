@@ -8,12 +8,16 @@
     tools:context=".NewEventActivity"
     android:background="@color/colorPrimary">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:orientation="vertical"
-        android:padding="80dp">
+        android:padding="80dp"
+        android:paddingBottom="0dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
             android:background="@color/colorLight"
-            android:maxEms="20"
+            android:maxLength="25"
             android:text="Titre" />
 
         <Switch
@@ -162,4 +166,5 @@
         </LinearLayout>
 
     </LinearLayout>
+    </ScrollView>
 </RelativeLayout>
